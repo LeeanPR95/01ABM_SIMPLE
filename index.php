@@ -33,14 +33,24 @@
 	    <option value="modulo">Resto</option>
 	  </select>
 	  <br>
-	 <button type="submit">[Enviar]</button> 
+	 <button type="submit">Enviar</button> 
 	  <br>
 	</form>
 	<br>
 	<h3>Salida: </h3> 
 	<br>
+	
 	<div id="result-container">
-		<?php 
+		<?php
+		$db = new SQLite3('operaciones.db'); //antes del if conectamos a la base de datos
+		// Procesar el formulario si se ha enviado
+    if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["eliminar"])) {
+        foreach ($_POST["eliminar"] as $id) {
+            $db->exec("DELETE FROM operaciones WHERE id = $id");
+        }
+    }
+		
+		// Este if se asegura que todo esté correctamente puesto en el formulario:
 		if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["num1"]) && isset($_POST["num2"]) && isset($_POST["operador"])) {
 		  // Asignación de valores obtenidos con $_POST
 		  $num1 = $_POST["num1"];
@@ -115,10 +125,12 @@
 
 		function almacenarOperacion($num1, $num2, $operador, $resultado) {
 		  // Conexión a la base de datos
-		  $db = new SQLite3('operaciones.db');
+		  
 
 		  // Insertar la operación en la tabla
-		  $query = "INSERT INTO operaciones (num1, num2, operador, resultado) VALUES ($num1, $num2, '$operador', $resultado)";
+		  $db = new SQLite3('operaciones.db');
+			$query = "INSERT INTO operaciones (num1, num2, operador, resultado) VALUES ($num1, $num2, '$operador', $resultado)";
+
 		  $db->exec($query);
 
 		  // Cerrar la conexión a la base de datos
@@ -137,20 +149,24 @@
 	$result = $db->query($query);
 	
 	if ($result->numColumns() > 0) {
-	  echo "<h3>Operaciones almacenadas:</h3>";
-	  echo "<table>";
-	  echo "<tr><th>ID</th><th>Número 1</th><th>Número 2</th><th>Operador</th><th>Resultado</th></tr>";
-	  while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-	    echo "<tr>";
-	    echo "<td>{$row['id']}</td>";
-	    echo "<td>{$row['num1']}</td>";
-	    echo "<td>{$row['num2']}</td>";
-	    echo "<td>{$row['operador']}</td>";
-	    echo "<td>{$row['resultado']}</td>";
-	    echo "</tr>";
-	  }
-	  echo "</table>";
-	}
+        echo "<h3>Operaciones almacenadas:</h3>";
+        echo "<form method='post'>";
+        echo "<table>";
+        echo "<tr> <th>ID</th> <th>Número 1</th> <th>Número 2</th> <th>Operador</th> <th>Resultado</th> <th>Eliminar</th> </tr>";
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            echo "<tr>";
+            echo "<td>{$row['id']}</td>";
+            echo "<td>{$row['num1']}</td>";
+            echo "<td>{$row['num2']}</td>";
+            echo "<td>{$row['operador']}</td>";
+            echo "<td>{$row['resultado']}</td>";
+            echo "<td><input type='checkbox' name='eliminar[]' value='{$row['id']}'></td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+        echo "<button type='submit'>Eliminar Seleccionados</button>";
+        echo "</form>";
+    }
 
 	// Cerrar la conexión a la base de datos
 	$db->close();
