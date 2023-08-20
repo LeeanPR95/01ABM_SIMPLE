@@ -14,8 +14,8 @@ body {
 
 .ingreso {
   background-color: aquamarine;
-  width: 70%;
-  height: 60%;
+  width: 400px;
+  height: 150px;
 }
 
 table, tr, td{
