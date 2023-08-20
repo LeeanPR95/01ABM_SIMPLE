@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+
 body {
   display: flex;
   flex-direction: column;
@@ -10,8 +12,29 @@ body {
   font-family: 'JetBrains Mono', monospace;
 }
 
-form {
-  background-color: green;
+.ingreso {
+  background-color: aquamarine;
   width: 70%;
   height: 60%;
+}
+
+table, tr, td{
+  border-style: solid;
+  border-width: 2px;
+  border-collapse: collapse;
+  border-color: black;
+}
+tr {
+  border-style: solid;
+  border-width: 2px;
+  border-collapse: collapse;
+  border-color: black;
+}
+
+td, th {
+  padding: 8px;
+  border-style: solid;
+  border-width: 2px;
+  border-collapse: collapse;
+  border-color: black;
 }
